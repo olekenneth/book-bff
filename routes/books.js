@@ -33,9 +33,9 @@ router.get('/:isbn', function(req, res, next) {
     getBook(req.params.isbn)
         .then((json) => {
             var book = {
-                title: jp.query(json, '$..title'),
-                subtitle: jp.query(json, '$..subtitle'),
-                image: jp.query(json, '$..thumbnail')
+                title: jp.value(json, '$..title'),
+                subtitle: jp.value(json, '$..subtitle'),
+                image: jp.value(json, '$..thumbnail')
             };
             res.render('book', { title: 'BFF for books', book: book });
         })
