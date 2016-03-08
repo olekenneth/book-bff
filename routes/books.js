@@ -36,7 +36,8 @@ router.get('/:isbn', function(req, res, next) {
                 image: item.volumeInfo.imageLinks.thumbnail
             };
             res.render('book', { title: 'Express', book: book });
-        });
+        })
+        .catch(next);
 });
 
 module.exports = router;
