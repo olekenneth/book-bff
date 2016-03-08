@@ -6,3 +6,25 @@ body {
 a {
   color: #00B7FF;
 }
+
+img {
+    width: 300px;
+    z-index: -1;
+    position: absolute;
+}
+
+h1 {
+    display: inline-block;
+    max-width: 200px;
+    color: #fff;
+    padding: 50px;
+    font-size: 40px;
+    text-shadow:
+    3px 3px 0 #808080,
+    -1px -1px 0 #808080,
+    1px -1px 0 #808080,
+    -1px 1px 0 #808080,
+    1px 1px 0 #808080;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: black;
+}

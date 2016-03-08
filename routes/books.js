@@ -2,6 +2,16 @@
 
 var express = require('express');
 var router = express.Router();
+var ESI = require('nodesi');
+
+var esi = new ESI({
+    onError: function(src, error) {
+        if(error.statusCode === 404) {
+            return 'Not found';
+        }
+        return '';
+    }
+});
 
 var goodGuy = require('good-guy-http');
 var request = goodGuy({
@@ -30,15 +40,24 @@ var getBook = (isbn) => {
 };
 
 router.get('/:isbn', function(req, res, next) {
-    getBook(req.params.isbn)
+    return getBook(req.params.isbn)
         .then((json) => {
             var book = {
                 title: jp.value(json, '$..title'),
                 subtitle: jp.value(json, '$..subtitle'),
                 image: jp.value(json, '$..thumbnail')
             };
-            res.render('book', { title: 'BFF for books', book: book });
+            return new Promise((resolve, reject) => {
+                req.app.render('book', { title: 'BFF for books', book: book }, function(err, html) {
+                    if (!err) {
+                        return resolve(html);
+                    }
+                    return reject(err);
+                });
+            });
         })
+        .then((html) => esi.process(html))
+        .then((html) => res.send(html))
         .catch(next);
 });
 
