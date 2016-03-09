@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var books = require('./routes/books');
-var users = require('./routes/users');
 
 var app = express();
 
@@ -22,11 +21,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use(esiMiddleware());
+
+var requestLogger = (req, res, next) => {
+    var sock = req.socket;
+    req._startTime = new Date().getTime();
+
+    function logRequest(){
+        res.removeListener('finish', logRequest);
+        res.removeListener('close', logRequest);
+        console.log('The request took : ', new Date().getTime() - req._startTime + 'ms');
+    };
+
+    res.on('finish', logRequest);
+    res.on('close', logRequest);
+
+    next();
+};
+
+app.use('/', requestLogger);
 
 app.use('/', routes);
 app.use('/books', books);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
