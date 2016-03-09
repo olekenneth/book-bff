@@ -23,7 +23,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 var requestLogger = (req, res, next) => {
-    var sock = req.socket;
     req._startTime = new Date().getTime();
 
     function logRequest(){
