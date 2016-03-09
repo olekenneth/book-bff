@@ -39,7 +39,9 @@ var getBook = (isbn) => {
         .then((response) => response.body);
 };
 
+
 router.get('/:isbn', function(req, res, next) {
+    console.log(process.env);
     return getBook(req.params.isbn)
         .then((json) => {
             var book = {
