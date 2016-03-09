@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>{{ title }} - {{ book.title }}</title>
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-  </head>
-  <body>
-      <esi:include src="https://kwasniew.github.io/menu.html" />
-      <img src="{{ book.image }}" alt="" />
-      <h1>{{ book.title }}</h1>
-      <esi:include src="https://kwasniew.github.io/footer.html" />
-  </body>
+    <head>
+        <title>{{ title }} - {{ book.title }}</title>
+        <link rel="stylesheet" href="/stylesheets/style.css" />
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.1.min.js"></script>
+    </head>
+    <body>
+        <esi:include src="https://kwasniew.github.io/menu.html" />
+        <div>
+            <img src="{{ book.image }}" alt="" />
+            <h1>{{ book.title }}</h1>
+        </div>
+        <esi:include src="{{ book.stockUrl }}" />
+        <a role="esi" href="https://kwasniew.github.io/footer.html">Footer</a>
+        <script src="/javascripts/javascript.js">
+        </script>
+    </body>
 </html>

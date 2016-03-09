@@ -43,6 +43,7 @@ router.get('/:isbn', function(req, res, next) {
     return getBook(req.params.isbn)
         .then((json) => {
             var book = {
+                stockUrl: (process.env.STOCK_URL || 'http://localhost:3000/stock/') + req.params.isbn,
                 title: jp.value(json, '$..title'),
                 subtitle: jp.value(json, '$..subtitle'),
                 image: jp.value(json, '$..thumbnail')
