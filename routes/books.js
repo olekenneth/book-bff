@@ -31,18 +31,20 @@ router.get('/', function(req, res, next) {
     res.redirect('/books/0596805527');
 });
 
-var getBook = (isbn) => {
+var getBook = (isbn, headers) => {
     return request({
         url: proxies[Math.floor(Math.random() * proxies.length)] + isbn,
-        json: true
+        json: true,
+        headers: headers
     })
         .then((response) => response.body);
 };
 
 
 router.get('/:isbn', function(req, res, next) {
-    console.log(process.env);
-    return getBook(req.params.isbn)
+    var requestId = req.get('x-request-id');
+    res.set('x-request-id', requestId);
+    return getBook(req.params.isbn, { 'x-request-id': requestId })
         .then((json) => {
             var book = {
                 stockUrl: (process.env.STOCK_URL || 'http://localhost:3000/stock/') + req.params.isbn,
@@ -51,7 +53,7 @@ router.get('/:isbn', function(req, res, next) {
                 image: jp.value(json, '$..thumbnail')
             };
             return new Promise((resolve, reject) => {
-                req.app.render('book', { title: 'BFF for books', book: book }, function(err, html) {
+                req.app.render('book', { title: 'BFF for books - Request: ' + requestId, book: book }, function(err, html) {
                     if (!err) {
                         return resolve(html);
                     }
@@ -59,7 +61,11 @@ router.get('/:isbn', function(req, res, next) {
                 });
             });
         })
-        .then((html) => esi.process(html))
+        .then((html) => esi.process(html, {
+            headers: {
+                'x-request-id': requestId
+            }
+        }))
         .then((html) => res.send(html))
         .catch(next);
 });
